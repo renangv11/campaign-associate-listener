@@ -10,13 +10,13 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static javax.persistence.FetchType.EAGER;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "time")
-@NamedEntityGraph(name = "Team.detail",
-        attributeNodes = @NamedAttributeNode("campaigns"))
 public class Team {
 
     @Id
@@ -26,7 +26,7 @@ public class Team {
     @Column(name = "nome_time", unique = true)
     private String teamName;
 
-    @OneToMany
+    @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name = "id_time")
     private List<Campaign> campaigns;
 

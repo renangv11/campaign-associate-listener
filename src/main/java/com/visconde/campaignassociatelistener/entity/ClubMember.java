@@ -22,7 +22,7 @@ public class ClubMember {
     @Column(name = "email_socio", unique = true, nullable = false)
     private String clubMemberEmail;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="socio_campanha", joinColumns=
             {@JoinColumn(name="id_campanha")},
             inverseJoinColumns= {@JoinColumn(name="id_socio")})

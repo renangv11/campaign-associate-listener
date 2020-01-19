@@ -4,9 +4,8 @@ import com.visconde.campaignassociatelistener.converter.ClubMemberConverter;
 import com.visconde.campaignassociatelistener.datacontract.ClubMemberDataContract;
 import com.visconde.campaignassociatelistener.entity.Campaign;
 import com.visconde.campaignassociatelistener.entity.ClubMember;
-import com.visconde.campaignassociatelistener.entity.Team;
+import com.visconde.campaignassociatelistener.repository.CampaignRepository;
 import com.visconde.campaignassociatelistener.repository.ClubMemberRepository;
-import com.visconde.campaignassociatelistener.repository.TeamRepository;
 import com.visconde.campaignassociatelistener.service.imp.AssociateServiceImp;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,17 +22,17 @@ import static org.mockito.Mockito.*;
 public class AssociateServiceImpTest {
 
     private ClubMemberRepository clubMemberRepository = mock(ClubMemberRepository.class);
-    private TeamRepository teamRepository = mock(TeamRepository.class);
+    private CampaignRepository campaignRepository = mock(CampaignRepository.class);
     private ClubMemberConverter clubMemberConverter = mock(ClubMemberConverter.class);
 
-    private AssociateService associateService = new AssociateServiceImp(clubMemberRepository, teamRepository, clubMemberConverter);
+    private AssociateService associateService = new AssociateServiceImp(clubMemberRepository, campaignRepository, clubMemberConverter);
 
     @Test
     public void associate_new_club_members_with_new_campaigns(){
         when(clubMemberRepository.findByClubMemberId(1l))
                 .thenReturn(empty());
-        when(teamRepository.findByTeamNameAndEffectiveDate(any(String.class), any(LocalDate.class)))
-                .thenReturn(mockTeamRepository());
+        when(campaignRepository.findByTeamNameAndEffectiveDate(any(String.class), any(LocalDate.class)))
+                .thenReturn(mockCampaignRepository());
         when(clubMemberConverter.convertDataContractToEntity(any(ClubMemberDataContract.class)))
                 .thenReturn(new ClubMember());
 
@@ -46,8 +45,8 @@ public class AssociateServiceImpTest {
     public void associate_a_already_registered_club_members_with_new_campaigns(){
         when(clubMemberRepository.findByClubMemberId(1l))
                 .thenReturn(Optional.of(mockClubMember()));
-        when(teamRepository.findByTeamNameAndEffectiveDate(any(String.class), any(LocalDate.class)))
-                .thenReturn(mockTeamRepository());
+        when(campaignRepository.findByTeamNameAndEffectiveDate(any(String.class), any(LocalDate.class)))
+                .thenReturn(mockCampaignRepository());
 
         associateService.associateClubMemberWithCampaigns(mockClubMemberDataContract());
 
@@ -73,12 +72,12 @@ public class AssociateServiceImpTest {
                 .build();
     }
 
-    private Team mockTeamRepository() {
+    private List<Campaign> mockCampaignRepository() {
         List<Campaign> campaigns = new ArrayList<>();
         campaigns.add(Campaign.builder().campaignName("camapnha teste 1").teamId(1l).build());
         campaigns.add(Campaign.builder().campaignName("camapnha teste 2").teamId(1l).build());
 
-        return Team.builder().teamId(1l).teamName("Corinthians").campaigns(campaigns).build();
+        return campaigns;
     }
 
 }
